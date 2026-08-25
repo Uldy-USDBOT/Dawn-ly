@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفجر | Dawn.ly</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f4c43">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="الفجر">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0d1b2a;
+    --night-2:#132a3d;
+    --teal:#0f4c43;
+    --teal-2:#146157;
+    --gold:#c9a227;
+    --gold-light:#e6c65c;
+    --dawn:#e2703a;
+    --cream:#faf5e9;
+    --cream-2:#f1e8d3;
+    --ink:#182620;
+    --muted:#5c6b63;
+    --line:#e2d8bd;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Cairo',sans-serif;
+    line-height:1.8;
+  }
+  .amiri{font-family:'Amiri',serif;}
+
+  /* ---------- Horizon header (signature element) ---------- */
+  .horizon{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg,var(--night) 0%, var(--night-2) 40%, var(--teal) 75%, var(--dawn) 100%);
+    padding:26px 20px 90px;
+    text-align:center;
+    color:var(--cream);
+  }
+  .horizon::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-70px;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    transform:translateX(-50%);
+    background:radial-gradient(circle at 50% 40%, var(--gold-light), var(--gold) 55%, transparent 70%);
+    box-shadow:0 0 60px 20px rgba(230,198,92,.35);
+    animation:rise 6s ease-in-out infinite alternate;
+  }
+  @keyframes rise{
+    from{ bottom:-90px; opacity:.75;}
+    to{ bottom:-55px; opacity:1;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .horizon::before{ animation:none; bottom:-70px;}
+  }
+  .brand{
+    position:relative;
+    z-index:2;
+  }
+  .brand h1{
+    font-family:'Amiri',serif;
+    font-size:2.6rem;
+    margin:6px 0 2px;
+    letter-spacing:1px;
+    color:var(--gold-light);
+    text-shadow:0 2px 18px rgba(0,0,0,.4);
+  }
+  .brand .domain{
+    font-size:.85rem;
+    letter-spacing:3px;
+    color:rgba(250,245,233,.65);
+    text-transform:uppercase;
+  }
+  .brand p.tag{
+    margin:10px auto 0;
+    max-width:420px;
+    color:rgba(250,245,233,.85);
+    font-size:.95rem;
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; justify-content:center; flex-wrap:wrap;
+    gap:6px;
+    background:var(--cream);
+    border-bottom:1px solid var(--line);
+    padding:10px 8px;
+  }
+  nav button{
+    font-family:'Cairo',sans-serif;
+    font-weight:600;
+    font-size:.92rem;
+    background:transparent;
+    color:var(--muted);
+    border:1px solid transparent;
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:.2s;
+  }
+  nav button:hover{ background:var(--cream-2); }
+  nav button.active{
+    background:var(--teal);
+    color:var(--cream);
+    border-color:var(--teal);
+  }
+  nav button:focus-visible{ outline:2px solid var(--dawn); outline-offset:2px; }
+
+  main{ max-width:900px; margin:0 auto; padding:28px 18px 70px; }
+  section{ display:none; animation:fadein .35s ease; }
+  section.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .section-title{
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:6px;
+  }
+  .section-title .star{
+    width:22px; height:22px; flex:none;
+    color:var(--gold);
+  }
+  .section-title h2{
+    font-family:'Amiri',serif;
+    font-size:1.7rem;
+    margin:0;
+    color:var(--teal);
+  }
+  .section-sub{ color:var(--muted); margin:0 0 22px; font-size:.95rem; }
+
+  .divider{
+    height:14px; margin:26px 0;
+    background-repeat:repeat-x; background-position:center;
+    opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='14'><path d='M14 0 L18 4 L14 8 L10 4 Z M14 6 L18 10 L14 14 L10 10 Z' fill='%23c9a227'/></svg>");
+  }
+
+  /* ---------- Prayer times card ---------- */
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 6px 24px rgba(20,40,35,.05);
+  }
+  .loc-line{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    margin-bottom:14px; color:var(--muted); font-size:.92rem;
+  }
+  .times-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:10px;
+  }
+  .time-box{
+    background:var(--cream-2);
+    border-radius:12px;
+    padding:16px 8px;
+    text-align:center;
+    border:1px solid var(--line);
+  }
+  .time-box.now{
+    background:linear-gradient(160deg,var(--teal),var(--teal-2));
+    color:var(--cream);
+    border-color:var(--teal);
+  }
+  .time-box .name{ font-weight:700; font-size:.95rem; }
+  .time-box .val{ font-family:'Amiri',serif; font-size:1.5rem; margin-top:6px; }
+  .status{ text-align:center; color:var(--muted); padding:20px 0; }
+  .hijri{ text-align:center; margin-top:16px; font-size:.9rem; color:var(--muted);}
+
+  /* ---------- Quran ---------- */
+  .controls-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  select{
+    font-family:'Cairo',sans-serif;
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    font-size:.92rem;
+    flex:1;
+    min-width:160px;
+  }
+  .surah-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:10px;
+    max-height:420px;
+    overflow-y:auto;
+    padding-left:4px;
+  }
+  .surah-item{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .surah-item:hover{ border-color:var(--gold); background:var(--cream-2); }
+  .surah-item.playing{ background:var(--teal); color:#fff; border-color:var(--teal); }
+  .surah-item .num{ font-size:.72rem; color:var(--muted); }
+  .surah-item.playing .num{ color:rgba(255,255,255,.75); }
+  .surah-item .nm{ font-family:'Amiri',serif; font-size:1.15rem; margin-top:2px; }
+  .player-bar{
+    position:sticky; bottom:0; margin-top:18px;
+    background:var(--night);
+    border-radius:16px;
+    padding:14px 16px;
+    color:var(--cream);
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .player-bar .now-playing{ font-family:'Amiri',serif; font-size:1.1rem; flex:1; min-width:140px; }
+  audio{ flex:2; min-width:220px; }
+
+  /* ---------- Hadith / Dua cards ---------- */
+  .item-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .item-card .idx{
+    display:inline-block;
+    background:var(--teal);
+    color:#fff;
+    font-size:.75rem;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+  }
+  .item-card .arabic{
+    font-family:'Amiri',serif;
+    font-size:1.25rem;
+    line-height:2.1;
+    color:var(--ink);
+  }
+  .item-card .src{
+    margin-top:10px;
+    font-size:.85rem;
+    color:var(--muted);
+  }
+  .item-card h3{
+    margin:0 0 8px;
+    font-family:'Amiri',serif;
+    color:var(--teal);
+    font-size:1.15rem;
+  }
+
+  /* ---------- Q&A ---------- */
+  .qa{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-bottom:10px;
+    overflow:hidden;
+  }
+  .qa button.q{
+    width:100%;
+    text-align:right;
+    background:transparent;
+    border:none;
+    padding:16px 18px;
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+  .qa button.q .tag{
+    font-size:.7rem; font-weight:600; color:var(--dawn);
+    border:1px solid var(--dawn); border-radius:999px; padding:2px 10px;
+    white-space:nowrap;
+  }
+  .qa .a{
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+    padding:0 18px;
+    color:var(--ink);
+    font-size:.96rem;
+  }
+  .qa .a p{ margin:0 0 16px; }
+  .qa.open .a{ max-height:400px; }
+  .qa .plus{ transition:.2s; color:var(--teal); font-size:1.3rem; flex:none; }
+  .qa.open .plus{ transform:rotate(45deg); }
+
+  .search-box{
+    width:100%; padding:12px 16px; border-radius:12px;
+    border:1px solid var(--line); font-family:'Cairo',sans-serif;
+    margin-bottom:18px; font-size:.95rem;
+  }
+
+  footer{
+    text-align:center; color:var(--muted); font-size:.85rem;
+    padding:30px 16px 50px;
+  }
+  footer .fname{ color:var(--gold); font-family:'Amiri',serif; font-size:1.1rem; }
+
+  /* ---------- Install to home screen ---------- */
+  .install-wrap{ text-align:center; margin:34px 0 8px; }
+  #installBtn{
+    display:inline-flex; align-items:center; gap:10px;
+    background:linear-gradient(135deg,var(--teal),var(--teal-2));
+    color:var(--cream);
+    border:none;
+    padding:14px 26px;
+    border-radius:999px;
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(15,76,68,.28);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  #installBtn:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(15,76,68,.35); }
+  #installBtn:focus-visible{ outline:2px solid var(--dawn); outline-offset:3px; }
+  #installBtn svg{ width:20px; height:20px; flex:none; }
+  #installNote{
+    display:block; margin-top:10px; font-size:.82rem; color:var(--muted);
+  }
+
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0; z-index:100;
+    background:rgba(13,27,42,.6);
+    align-items:flex-end; justify-content:center;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-sheet{
+    background:var(--cream);
+    width:100%; max-width:480px;
+    border-radius:22px 22px 0 0;
+    padding:26px 22px 32px;
+    box-shadow:0 -10px 40px rgba(0,0,0,.25);
+    animation:slideup .25s ease;
+  }
+  @keyframes slideup{ from{ transform:translateY(100%);} to{ transform:translateY(0);} }
+  .modal-sheet h3{
+    font-family:'Amiri',serif; color:var(--teal); margin:0 0 14px; font-size:1.3rem;
+    display:flex; align-items:center; gap:8px;
+  }
+  .modal-sheet ol{ margin:0 0 18px; padding-inline-start:20px; }
+  .modal-sheet li{ margin-bottom:10px; font-size:.95rem; }
+  .modal-sheet .share-icon{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; background:var(--teal); color:#fff; border-radius:6px; font-size:.8rem;
+  }
+  .modal-close{
+    display:block; width:100%; text-align:center;
+    background:var(--teal); color:var(--cream);
+    border:none; padding:13px; border-radius:12px;
+    font-family:'Cairo',sans-serif; font-weight:700; font-size:.95rem; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<header class="horizon">
+  <div class="brand">
+    <div class="domain">Dawn.ly</div>
+    <h1>الفَجْر</h1>
+    <p class="tag">بوابتك اليومية إلى مواقيت الصلاة، والقرآن الكريم، والسنة النبوية، والدعاء — من طرابلس إلى كل مكان</p>
+  </div>
+</header>
+
+<nav id="nav">
+  <button data-sec="prayer" class="active">مواقيت الصلاة</button>
+  <button data-sec="quran">القرآن الكريم</button>
+  <button data-sec="hadith">الأحاديث النووية</button>
+  <button data-sec="duas">الأدعية</button>
+  <button data-sec="qa">سؤال وجواب</button>
+</nav>
+
+<main>
+
+  <!-- ========== 1. PRAYER TIMES ========== -->
+  <section id="prayer" class="active">
+    <div class="section-title">
+      <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 8l-6 5 2 7-6-4.5L6 20l2-7-6-5 7.5-.5z"/></svg>
+      <h2>مواقيت الصلاة</h2>
+    </div>
+    <p class="section-sub">حسب توقيت مدينة طرابلس، ليبيا — تحدَّث تلقائيًا من خدمة AlAdhan</p>
+    <div class="card">
+      <div class="loc-line">
+        <span id="dateLine">جارٍ تحميل التاريخ...</span>
+        <span>📍 طرابلس، ليبيا</span>
+      </div>
+      <div id="timesStatus" class="status">جارٍ جلب مواقيت الصلاة...</div>
+      <div id="timesGrid" class="times-grid" style="display:none;"></div>
+      <div id="hijriLine" class="hijri"></div>
+    </div>
+  </section>
+
+  <!-- ========== 2. QURAN ========== -->
+  <section id="quran">
+    <div class="section-title">
+      <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 8l-6 5 2 7-6-4.5L6 20l2-7-6-5 7.5-.5z"/></svg>
+      <h2>القرآن الكريم</h2>
+    </div>
+    <p class="section-sub">استمع للقرآن الكريم كاملاً — اختر السورة والقارئ. إن لم يعمل مقطع معيّن، أعِد اختيار السورة أو جرّب قارئًا آخر</p>
+    <div class="controls-row">
+      <select id="reciterSelect"></select>
+      <input class="search-box" style="margin:0;" id="surahSearch" placeholder="ابحث عن سورة...">
+    </div>
+    <div class="surah-list" id="surahList"></div>
+    <div class="player-bar">
+      <span class="now-playing" id="nowPlaying">اختر سورة للاستماع</span>
+      <audio id="audioPlayer" controls></audio>
+    </div>
+  </section>
+
+  <!-- ========== 3. HADITH ========== -->
+  <section id="hadith">
+    <div class="section-title">
+      <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 8l-6 5 2 7-6-4.5L6 20l2-7-6-5 7.5-.5z"/></svg>
+      <h2>الأربعون النووية</h2>
+    </div>
+    <p class="section-sub">أحاديث نبوية شريفة جمعها الإمام يحيى بن شرف النووي، وهي أصول جامعة في الدين (٤٢ حديثًا وفق أشهر الطبعات)</p>
+    <div id="hadithList"></div>
+  </section>
+
+  <!-- ========== 4. DUAS ========== -->
+  <section id="duas">
+    <div class="section-title">
+      <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 8l-6 5 2 7-6-4.5L6 20l2-7-6-5 7.5-.5z"/></svg>
+      <h2>الأدعية المأثورة</h2>
+    </div>
+    <p class="section-sub">٥٠ دعاءً من القرآن والسنة، لمناسبات اليوم والليلة</p>
+    <input class="search-box" id="duaSearch" placeholder="ابحث عن دعاء (مثال: النوم، السفر، الهمّ)...">
+    <div id="duaList"></div>
+  </section>
+
+  <!-- ========== 5. Q&A ========== -->
+  <section id="qa">
+    <div class="section-title">
+      <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 8l-6 5 2 7-6-4.5L6 20l2-7-6-5 7.5-.5z"/></svg>
+      <h2>سؤال وجواب</h2>
+    </div>
+    <p class="section-sub">أشهر الأسئلة الشرعية حول الصيام والزكاة ومسائل شائعة، على مذهب جمهور أهل السنة، وقد ترد اجتهادات فقهية متعددة في بعض التفاصيل الدقيقة</p>
+    <div id="qaList"></div>
+  </section>
+
+</main>
+
+<div class="install-wrap">
+  <button id="installBtn" style="display:none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+    <span id="installBtnText">أضف الموقع إلى شاشة هاتفك</span>
+  </button>
+  <span id="installNote"></span>
+</div>
+
+<div class="modal-overlay" id="iosModal">
+  <div class="modal-sheet">
+    <h3>📲 إضافة "الفجر" إلى الشاشة الرئيسية</h3>
+    <ol>
+      <li>اضغط على أيقونة المشاركة <span class="share-icon">⬆︎</span> في شريط المتصفح (سفاري) أسفل الشاشة أو أعلاها.</li>
+      <li>مرّر للأسفل واختر <strong>"إضافة إلى الشاشة الرئيسية"</strong> (Add to Home Screen).</li>
+      <li>اضغط <strong>"إضافة"</strong> أعلى الشاشة، وستظهر أيقونة الفجر على هاتفك مثل أي تطبيق.</li>
+    </ol>
+    <button class="modal-close" id="closeIosModal">حسنًا، فهمت</button>
+  </div>
+</div>
+
+<footer>
+  <div class="fname">الفجر · Dawn.ly</div>
+  <p>موقع تعريفي يهدف لتيسير الوصول إلى العبادات اليومية. يُنصح بمراجعة أهل العلم الموثوقين فيما يخص المسائل الفقهية التفصيلية.</p>
+</footer>
+
+<script>
+/* ============ NAVIGATION ============ */
+const navButtons = document.querySelectorAll('nav button');
+const sections = document.querySelectorAll('main section');
+navButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    navButtons.forEach(b=>b.classList.remove('active'));
+    sections.forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.sec).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+/* ============ 1. PRAYER TIMES (Aladhan API, Tripoli, Libya) ============ */
+async function loadPrayerTimes(){
+  const statusEl = document.getElementById('timesStatus');
+  const gridEl = document.getElementById('timesGrid');
+  const dateLine = document.getElementById('dateLine');
+  const hijriLine = document.getElementById('hijriLine');
+  try{
+    const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tripoli&country=Libya&method=5');
+    if(!res.ok) throw new Error('network');
+    const json = await res.json();
+    const t = json.data.timings;
+    const names = [
+      {key:'Fajr', ar:'الفجر'},
+      {key:'Sunrise', ar:'الشروق'},
+      {key:'Dhuhr', ar:'الظهر'},
+      {key:'Asr', ar:'العصر'},
+      {key:'Maghrib', ar:'المغرب'},
+      {key:'Isha', ar:'العشاء'}
+    ];
+    const now = new Date();
+    const nowMinutes = now.getHours()*60 + now.getMinutes();
+    function toMinutes(str){
+      const [h,m] = str.split(':').map(Number);
+      return h*60+m;
+    }
+    let closestIdx = 0, minDiff = Infinity;
+    names.forEach((n,i)=>{
+      const diff = nowMinutes - toMinutes(t[n.key].slice(0,5));
+      if(diff>=0 && diff<minDiff){ minDiff = diff; closestIdx = i; }
+    });
+    gridEl.innerHTML = names.map((n,i)=>`
+      <div class="time-box ${i===closestIdx?'now':''}">
+        <div class="name">${n.ar}</div>
+        <div class="val">${t[n.key].slice(0,5)}</div>
+      </div>`).join('');
+    statusEl.style.display='none';
+    gridEl.style.display='grid';
+    const gdate = json.data.date.gregorian;
+    const hdate = json.data.date.hijri;
+    dateLine.textContent = `${gdate.weekday.ar} ${gdate.day} ${gdate.month.ar} ${gdate.year}`;
+    hijriLine.textContent = `${hdate.day} ${hdate.month.ar} ${hdate.year} هـ`;
+  }catch(err){
+    statusEl.textContent = 'تعذر جلب مواقيت الصلاة حاليًا. تحقق من اتصالك بالإنترنت وحاول مجددًا.';
+  }
+}
+loadPrayerTimes();
+
+/* ============ 2. QURAN ============ */
+const surahs = [
+ "الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس",
+ "هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه",
+ "الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم",
+ "لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر",
+ "فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق",
+ "الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة",
+ "الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج",
+ "نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس",
+ "التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد",
+ "الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات",
+ "القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر",
+ "المسد","الإخلاص","الفلق","الناس"
+];
+const reciters = [
+  {id:'ar.alafasy', name:'مشاري راشد العفاسي'},
+  {id:'ar.abdulbasitmurattal', name:'عبد الباسط عبد الصمد (مرتّل)'},
+  {id:'ar.abdurrahmaansudais', name:'عبد الرحمن السديس'}
+];
+/* Different reciters are hosted at different bitrates on the CDN — try each in turn
+   so a missing 128kbps file (etc.) doesn't look like a totally broken reciter. */
+const AUDIO_BITRATES = [128, 192, 64, 48];
+const reciterSelect = document.getElementById('reciterSelect');
+reciterSelect.innerHTML = reciters.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+
+const surahListEl = document.getElementById('surahList');
+function renderSurahs(filter=''){
+  const f = filter.trim();
+  surahListEl.innerHTML = surahs.map((name,i)=>{
+    const num = i+1;
+    if(f && !name.includes(f) && !String(num).includes(f)) return '';
+    return `<div class="surah-item" data-num="${num}" data-name="${name}">
+      <div class="num">سورة رقم ${num}</div>
+      <div class="nm">${name}</div>
+    </div>`;
+  }).join('');
+}
+renderSurahs();
+document.getElementById('surahSearch').addEventListener('input', e=>renderSurahs(e.target.value));
+
+const audioPlayer = document.getElementById('audioPlayer');
+const nowPlaying = document.getElementById('nowPlaying');
+let currentPlayAttempt = 0;
+
+function playSurah(reciter, num, name){
+  currentPlayAttempt++;
+  const attemptId = currentPlayAttempt;
+  tryBitrate(reciter, num, name, 0, attemptId);
+}
+function tryBitrate(reciter, num, name, bitrateIdx, attemptId){
+  if(attemptId !== currentPlayAttempt) return; // a newer selection superseded this one
+  if(bitrateIdx >= AUDIO_BITRATES.length){
+    nowPlaying.textContent = `تعذر تشغيل سورة ${name} بصوت هذا القارئ حاليًا. جرّب قارئًا آخر.`;
+    return;
+  }
+  const bitrate = AUDIO_BITRATES[bitrateIdx];
+  audioPlayer.onerror = ()=> tryBitrate(reciter, num, name, bitrateIdx+1, attemptId);
+  audioPlayer.src = `https://cdn.islamic.network/quran/audio-surah/${bitrate}/${reciter}/${num}.mp3`;
+  audioPlayer.play().catch(()=>{ /* handled by onerror if the file itself is bad */ });
+  nowPlaying.textContent = `الآن: سورة ${name}`;
+}
+
+surahListEl.addEventListener('click', e=>{
+  const item = e.target.closest('.surah-item');
+  if(!item) return;
+  document.querySelectorAll('.surah-item.playing').forEach(el=>el.classList.remove('playing'));
+  item.classList.add('playing');
+  playSurah(reciterSelect.value, item.dataset.num, item.dataset.name);
+});
+reciterSelect.addEventListener('change', ()=>{
+  const playing = document.querySelector('.surah-item.playing');
+  if(playing) playSurah(reciterSelect.value, playing.dataset.num, playing.dataset.name);
+});
+
+/* ============ 3. HADITH (Al-Arba'in An-Nawawiyyah) ============ */
+const hadiths = [
+["إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى، فمن كانت هجرته إلى الله ورسوله فهجرته إلى الله ورسوله، ومن كانت هجرته لدنيا يصيبها أو امرأة ينكحها فهجرته إلى ما هاجر إليه.", "رواه البخاري ومسلم — عن عمر بن الخطاب رضي الله عنه"],
+["الإسلام أن تشهد أن لا إله إلا الله وأن محمدًا رسول الله، وتقيم الصلاة، وتؤتي الزكاة، وتصوم رمضان، وتحج البيت إن استطعت إليه سبيلًا. والإيمان أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر، وتؤمن بالقدر خيره وشره. والإحسان أن تعبد الله كأنك تراه، فإن لم تكن تراه فإنه يراك. [حديث جبريل عليه السلام]", "رواه مسلم — عن عمر بن الخطاب رضي الله عنه"],
+["بُني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمدًا رسول الله، وإقام الصلاة، وإيتاء الزكاة، وحج البيت، وصوم رمضان.", "رواه البخاري ومسلم — عن ابن عمر رضي الله عنهما"],
+["إن أحدكم يُجمَع خلقه في بطن أمه أربعين يومًا نطفة، ثم يكون علقة مثل ذلك، ثم يكون مضغة مثل ذلك، ثم يُرسَل إليه الملَك فينفخ فيه الروح، ويُؤمَر بأربع كلمات: بكتب رزقه وأجله وعمله وشقيّ أو سعيد.", "رواه البخاري ومسلم — عن ابن مسعود رضي الله عنه"],
+["من أحدث في أمرنا هذا ما ليس منه فهو ردّ.", "رواه البخاري ومسلم — عن عائشة رضي الله عنها"],
+["إن الحلال بيّن، وإن الحرام بيّن، وبينهما أمور مشتبهات لا يعلمهن كثير من الناس، فمن اتقى الشبهات فقد استبرأ لدينه وعرضه، ومن وقع في الشبهات وقع في الحرام.", "رواه البخاري ومسلم — عن النعمان بن بشير رضي الله عنهما"],
+["الدين النصيحة، قلنا: لمن؟ قال: لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم.", "رواه مسلم — عن تميم الداري رضي الله عنه"],
+["أُمرت أن أقاتل الناس حتى يشهدوا أن لا إله إلا الله وأن محمدًا رسول الله، ويقيموا الصلاة، ويؤتوا الزكاة، فإذا فعلوا ذلك عصموا مني دماءهم وأموالهم إلا بحق الإسلام، وحسابهم على الله.", "رواه البخاري ومسلم — عن ابن عمر رضي الله عنهما"],
+["ما نهيتكم عنه فاجتنبوه، وما أمرتكم به فأْتوا منه ما استطعتم، فإنما أهلك الذين من قبلكم كثرة مسائلهم واختلافهم على أنبيائهم.", "رواه البخاري ومسلم — عن أبي هريرة رضي الله عنه"],
+["إن الله تعالى طيّب لا يقبل إلا طيبًا، وإن الله أمر المؤمنين بما أمر به المرسلين.", "رواه مسلم — عن أبي هريرة رضي الله عنه"],
+["دَعْ ما يريبك إلى ما لا يريبك.", "رواه الترمذي والنسائي — عن الحسن بن علي رضي الله عنهما"],
+["من حسن إسلام المرء تركه ما لا يعنيه.", "رواه الترمذي — عن أبي هريرة رضي الله عنه"],
+["لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه.", "رواه البخاري ومسلم — عن أنس بن مالك رضي الله عنه"],
+["لا يحل دم امرئ مسلم يشهد أن لا إله إلا الله وأني رسول الله، إلا بإحدى ثلاث: الثيّب الزاني، والنفس بالنفس، والتارك لدينه المفارق للجماعة.", "رواه البخاري ومسلم — عن ابن مسعود رضي الله عنه"],
+["من كان يؤمن بالله واليوم الآخر فليقل خيرًا أو ليصمت، ومن كان يؤمن بالله واليوم الآخر فليكرم جاره، ومن كان يؤمن بالله واليوم الآخر فليكرم ضيفه.", "رواه البخاري ومسلم — عن أبي هريرة رضي الله عنه"],
+["لا تغضب. فردَّد مرارًا، قال: لا تغضب.", "رواه البخاري — عن أبي هريرة رضي الله عنه"],
+["إن الله كتب الإحسان على كل شيء، فإذا قتلتم فأحسنوا القِتلة، وإذا ذبحتم فأحسنوا الذبح، وليُحدّ أحدكم شفرته فليُرِح ذبيحته.", "رواه مسلم — عن شداد بن أوس رضي الله عنه"],
+["اتقِ الله حيثما كنت، وأتبِع السيئة الحسنة تمحُها، وخالِق الناس بخلق حسن.", "رواه الترمذي — عن معاذ بن جبل رضي الله عنه"],
+["احفظ الله يحفظك، احفظ الله تجده تجاهك، إذا سألتَ فاسأل الله، وإذا استعنتَ فاستعن بالله، واعلم أن الأمة لو اجتمعت على أن ينفعوك بشيء لم ينفعوك إلا بشيء قد كتبه الله لك.", "رواه الترمذي — عن ابن عباس رضي الله عنهما"],
+["إذا لم تستحِ فاصنع ما شئت.", "رواه البخاري — عن ابن مسعود رضي الله عنه"],
+["قل آمنت بالله ثم استقم.", "رواه مسلم — عن سفيان بن عبد الله رضي الله عنه"],
+["أفلح إن صدق، أو دخل الجنة إن صدق. [حديث السؤال عن أركان الإسلام]", "رواه البخاري ومسلم — عن طلحة بن عبيد الله رضي الله عنه"],
+["الطُّهور شطر الإيمان، والحمد لله تملأ الميزان، وسبحان الله والحمد لله تملآن -أو تملأ- ما بين السماء والأرض، والصلاة نور، والصدقة برهان، والصبر ضياء، والقرآن حجة لك أو عليك.", "رواه مسلم — عن أبي مالك الأشعري رضي الله عنه"],
+["يا عبادي إني حرّمت الظلم على نفسي وجعلته بينكم محرّمًا فلا تظالموا... [حديث قدسي]", "رواه مسلم — عن أبي ذر رضي الله عنه"],
+["كل سُلامى من الناس عليه صدقة، كل يوم تطلع فيه الشمس: تعدل بين اثنين صدقة، وتعين الرجل في دابته صدقة، والكلمة الطيبة صدقة، وبكل خطوة تمشيها إلى الصلاة صدقة، وتميط الأذى عن الطريق صدقة.", "رواه البخاري ومسلم — عن أبي هريرة رضي الله عنه"],
+["البِرّ حسن الخلق، والإثم ما حاك في صدرك وكرهت أن يطّلع عليه الناس.", "رواه مسلم — عن النواس بن سمعان رضي الله عنه"],
+["أوصيكم بتقوى الله والسمع والطاعة... وإياكم ومحدثات الأمور، فإن كل بدعة ضلالة.", "رواه أبو داود والترمذي — عن العرباض بن سارية رضي الله عنه"],
+["ألا أدلك على أبواب الخير؟ الصوم جُنّة، والصدقة تُطفئ الخطيئة كما يطفئ الماء النار...", "رواه الترمذي — عن معاذ بن جبل رضي الله عنه"],
+["إن الله فرض فرائض فلا تضيّعوها، وحدّ حدودًا فلا تعتدوها، وحرّم أشياء فلا تنتهكوها، وسكت عن أشياء رحمة بكم من غير نسيان فلا تبحثوا عنها.", "رواه الدارقطني — عن أبي ثعلبة رضي الله عنه"],
+["ازهد في الدنيا يحبك الله، وازهد فيما عند الناس يحبك الناس.", "رواه ابن ماجه — عن سهل بن سعد رضي الله عنه"],
+["لا ضرر ولا ضرار.", "رواه ابن ماجه والدارقطني — عن أبي سعيد الخدري رضي الله عنه"],
+["البيّنة على المدّعي، واليمين على من أنكر.", "رواه البيهقي — عن ابن عباس رضي الله عنهما"],
+["من رأى منكم منكرًا فليغيّره بيده، فإن لم يستطع فبلسانه، فإن لم يستطع فبقلبه، وذلك أضعف الإيمان.", "رواه مسلم — عن أبي سعيد الخدري رضي الله عنه"],
+["لا تحاسدوا، ولا تناجشوا، ولا تباغضوا، ولا تدابروا، ولا يبع بعضكم على بيع بعض، وكونوا عباد الله إخوانًا.", "رواه مسلم — عن أبي هريرة رضي الله عنه"],
+["من نفّس عن مؤمن كربة من كرب الدنيا نفّس الله عنه كربة من كرب يوم القيامة، ومن يسّر على معسر يسّر الله عليه في الدنيا والآخرة...", "رواه مسلم — عن أبي هريرة رضي الله عنه"],
+["إن الله كتب الحسنات والسيئات ثم بيّن ذلك: فمن همّ بحسنة فلم يعملها كتبها الله له عنده حسنة كاملة...", "رواه البخاري ومسلم — عن ابن عباس رضي الله عنهما"],
+["من عادى لي وليًا فقد آذنته بالحرب، وما تقرّب إليّ عبدي بشيء أحبّ إليّ مما افترضته عليه... [حديث قدسي]", "رواه البخاري — عن أبي هريرة رضي الله عنه"],
+["إن الله تجاوز لي عن أمتي الخطأ والنسيان وما استُكرهوا عليه.", "رواه ابن ماجه — عن ابن عباس رضي الله عنهما"],
+["كن في الدنيا كأنك غريب أو عابر سبيل.", "رواه البخاري — عن ابن عمر رضي الله عنهما"],
+["لا يؤمن أحدكم حتى يكون هواه تبعًا لما جئت به.", "حديث حسن صحيح — رواه أبو عمرو وأبو المظفر"],
+["يا ابن آدم، إنك ما دعوتني ورجوتني غفرت لك على ما كان منك ولا أبالي... [حديث قدسي]", "رواه الترمذي — عن أنس بن مالك رضي الله عنه"]
+];
+const hadithListEl = document.getElementById('hadithList');
+hadithListEl.innerHTML = hadiths.map((h,i)=>`
+  <div class="item-card">
+    <span class="idx">الحديث ${i+1}</span>
+    <div class="arabic amiri">${h[0]}</div>
+    <div class="src">${h[1]}</div>
+  </div>
+`).join('');
+
+/* ============ 4. DUAS ============ */
+const duas = [
+["دعاء الاستفتاح","سبحانك اللهم وبحمدك، وتبارك اسمك، وتعالى جدّك، ولا إله غيرك."],
+["دعاء الاستخارة","اللهم إني أستخيرك بعلمك، وأستقدرك بقدرتك، وأسألك من فضلك العظيم، فإنك تقدر ولا أقدر، وتعلم ولا أعلم، وأنت علام الغيوب."],
+["سيد الاستغفار","اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك، وأنا على عهدك ووعدك ما استطعت، أعوذ بك من شر ما صنعت، أبوء لك بنعمتك عليّ، وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت."],
+["دعاء أصبحنا وأصبح الملك لله","اللهم بك أصبحنا، وبك أمسينا، وبك نحيا وبك نموت، وإليك النشور."],
+["دعاء أمسينا وأمسى الملك لله","اللهم بك أمسينا، وبك أصبحنا، وبك نحيا وبك نموت، وإليك المصير."],
+["دعاء الاستيقاظ من النوم","الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور."],
+["دعاء النوم","باسمك اللهم أموت وأحيا."],
+["دعاء دخول المنزل","بسم الله ولجنا، وبسم الله خرجنا، وعلى ربنا توكلنا."],
+["دعاء الخروج من المنزل","بسم الله، توكلت على الله، ولا حول ولا قوة إلا بالله."],
+["دعاء دخول المسجد","اللهم افتح لي أبواب رحمتك."],
+["دعاء الخروج من المسجد","اللهم إني أسألك من فضلك."],
+["دعاء قبل الطعام","بسم الله."],
+["دعاء إذا نسي البسملة في أوله","بسم الله في أوله وآخره."],
+["دعاء بعد الطعام","الحمد لله الذي أطعمني هذا، ورزقنيه من غير حول مني ولا قوة."],
+["دعاء دخول الخلاء","اللهم إني أعوذ بك من الخُبُث والخبائث."],
+["دعاء الخروج من الخلاء","غفرانك."],
+["دعاء لبس الثوب الجديد","اللهم لك الحمد أنت كسوتنيه، أسألك خيره وخير ما صُنع له، وأعوذ بك من شره وشر ما صُنع له."],
+["دعاء السفر","الله أكبر، الله أكبر، الله أكبر، سبحان الذي سخّر لنا هذا وما كنا له مقرنين، وإنا إلى ربنا لمنقلبون."],
+["دعاء ركوب وسيلة النقل","سبحان الذي سخّر لنا هذا وما كنا له مقرنين، وإنا إلى ربنا لمنقلبون."],
+["دعاء دخول السوق","لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، يحيي ويميت وهو حي لا يموت، بيده الخير وهو على كل شيء قدير."],
+["دعاء الكرب","لا إله إلا الله العظيم الحليم، لا إله إلا الله رب العرش العظيم، لا إله إلا الله رب السماوات ورب الأرض ورب العرش الكريم."],
+["دعاء الهم والحزن","اللهم إني عبدك ابن عبدك ابن أمتك، ناصيتي بيدك، ماضٍ فيّ حكمك، عدل فيّ قضاؤك، أسألك بكل اسم هو لك... أن تجعل القرآن ربيع قلبي ونور صدري وجلاء حزني وذهاب همي."],
+["دعاء يونس عليه السلام","لا إله إلا أنت سبحانك إني كنت من الظالمين."],
+["دعاء الفزع","أعوذ بكلمات الله التامة من غضبه وعقابه، وشر عباده، ومن همزات الشياطين وأن يحضرون."],
+["دعاء عند رؤية ما يعجبه","ما شاء الله لا قوة إلا بالله."],
+["دعاء عند سماع الرعد","سبحان الذي يسبّح الرعد بحمده والملائكة من خيفته."],
+["دعاء عند هبوب الريح","اللهم إني أسألك خيرها وخير ما فيها وخير ما أُرسلت به، وأعوذ بك من شرها وشر ما فيها وشر ما أُرسلت به."],
+["دعاء نزول المطر","اللهم صيّبًا نافعًا."],
+["دعاء بعد المطر","مُطرنا بفضل الله ورحمته."],
+["دعاء قنوت الوتر","اللهم اهدني فيمن هديت، وعافني فيمن عافيت، وتولّني فيمن توليت، وبارك لي فيما أعطيت، وقني شر ما قضيت، فإنك تقضي ولا يُقضى عليك، إنه لا يذل من واليت."],
+["دعاء ليلة القدر","اللهم إنك عفوّ تحب العفو فاعفُ عني."],
+["دعاء الإفطار","ذهب الظمأ، وابتلّت العروق، وثبت الأجر إن شاء الله."],
+["دعاء لمن أفطرتَ عنده","أفطر عندكم الصائمون، وأكل طعامكم الأبرار، وصلّت عليكم الملائكة."],
+["دعاء لعيادة المريض","لا بأس، طهور إن شاء الله."],
+["دعاء الشفاء للمريض","أسأل الله العظيم رب العرش العظيم أن يشفيك."],
+["دعاء عند المصيبة","إنّا لله وإنّا إليه راجعون، اللهم أجرني في مصيبتي واخلف لي خيرًا منها."],
+["دعاء للميت","اللهم اغفر له وارحمه، وعافه واعف عنه."],
+["دعاء قضاء الدَّين","اللهم اكفني بحلالك عن حرامك، وأغنني بفضلك عمن سواك."],
+["دعاء طلب العلم","رب زدني علمًا."],
+["دعاء عند الغضب","أعوذ بالله من الشيطان الرجيم."],
+["دعاء بعد الوضوء","أشهد أن لا إله إلا الله وحده لا شريك له، وأشهد أن محمدًا عبده ورسوله."],
+["دعاء بداية الوضوء","بسم الله."],
+["دعاء ختم الدعاء (ربنا آتنا)","ربنا آتنا في الدنيا حسنة، وفي الآخرة حسنة، وقنا عذاب النار."],
+["دعاء طلب الرزق الحلال","اللهم اكفني بحلالك عن حرامك، وأغنني بفضلك عمن سواك."],
+["دعاء طلب الذرية الصالحة","ربّ هب لي من لدنك ذرية طيبة، إنك سميع الدعاء."],
+["دعاء للوالدين","ربّ ارحمهما كما ربياني صغيرًا."],
+["دعاء الثبات على الدين","يا مقلّب القلوب ثبّت قلبي على دينك."],
+["دعاء دفع الوسواس","آمنت بالله ورسله."],
+["دعاء عند الفرح والنعمة","الحمد لله الذي بنعمته تتم الصالحات."],
+["كفارة المجلس","سبحانك اللهم وبحمدك، أشهد أن لا إله إلا أنت، أستغفرك وأتوب إليك."]
+];
+const duaListEl = document.getElementById('duaList');
+function renderDuas(filter=''){
+  const f = filter.trim();
+  duaListEl.innerHTML = duas.map((d,i)=>{
+    if(f && !d[0].includes(f) && !d[1].includes(f)) return '';
+    return `<div class="item-card">
+      <h3>${i+1}. ${d[0]}</h3>
+      <div class="arabic amiri">${d[1]}</div>
+    </div>`;
+  }).join('');
+}
+renderDuas();
+document.getElementById('duaSearch').addEventListener('input', e=>renderDuas(e.target.value));
+
+/* ============ 5. Q&A ============ */
+const qaData = [
+["الصيام","ما حكم الصيام في شهر رمضان؟","الصيام فرض عين على كل مسلم بالغ عاقل قادر مقيم، وتُستثنى المرأة الحائض والنفساء فتفطران وجوبًا ثم تقضيان."],
+["الصيام","من يُرخَّص له بالإفطار في رمضان؟","المريض الذي يشقّ عليه الصوم أو يضره، والمسافر سفر قصر (يقضيان لاحقًا)، والحائض والنفساء (يفطران وتقضيان)، والشيخ الكبير والمريض الذي لا يُرجى برؤه (يُطعمان عن كل يوم مسكينًا بدل القضاء)، أما الحامل والمرضع فلهما تفصيل عند أهل العلم إذا خافتا على أنفسهما أو ولديهما."],
+["الصيام","ما الذي يُبطل الصيام؟","الأكل والشرب متعمدًا، والجماع، وخروج المني بشهوة، وابتداء الحيض أو النفاس أثناء اليوم. أما القيء المتعمد فمُبطل عند جمهور الفقهاء، وفي بعض المسائل كالحجامة وابتلاع الريق تفصيل واختلاف بين أهل العلم."],
+["الصيام","هل الأكل أو الشرب ناسيًا يُفطر الصائم؟","لا يُفطر؛ فمن أكل أو شرب ناسيًا وهو صائم فليتمّ صومه، فإنما أطعمه الله وسقاه، وهذا مذهب جمهور العلماء."],
+["الصيام","ما حكم زكاة الفطر؟","واجبة على كل مسلم صغيرًا أو كبيرًا، ذكرًا أو أنثى، ومقدارها صاع من طعام (نحو 2.5 إلى 3 كيلوجرام تقريبًا) من قوت البلد الغالب، وتُخرج قبل صلاة عيد الفطر، ويجوز إخراجها قبل العيد بيوم أو يومين."],
+["الصيام","ما حكم صيام يوم الشك (اليوم الذي يُشك في كونه من رمضان)؟","يُكره صيامه احتياطًا عند جمهور العلماء، إلا لمن كانت له عادة سابقة كصيام الاثنين والخميس فوافقت ذلك اليوم."],
+["الزكاة","ما هو نصاب زكاة الذهب؟","نصاب الذهب خمسة وثمانون (85) جرامًا من الذهب الخالص فأكثر، فإذا بلغ المال هذا النصاب وحال عليه الحول (سنة هجرية كاملة) وجبت فيه الزكاة بمقدار 2.5% من قيمته."],
+["الزكاة","ما هو نصاب زكاة الفضة؟","نصاب الفضة خمسمائة وخمسة وتسعون (595) جرامًا من الفضة الخالصة، والمقدار الواجب فيها أيضًا 2.5% بعد حولان الحول."],
+["الزكاة","كيف تُحسب زكاة النقود وعروض التجارة؟","تُقدَّر الأموال النقدية والتجارية بما يعادل نصاب الذهب أو الفضة (وقد رجّح بعض العلماء اعتبار الأدنى منهما تحقيقًا لمصلحة الفقراء)، فمتى بلغت القيمة النصاب وحال عليها الحول وجبت فيها الزكاة بنسبة 2.5%."],
+["الزكاة","لمن تُصرف أموال الزكاة؟","تُصرف للأصناف الثمانية الواردة في القرآن الكريم: الفقراء، والمساكين، والعاملين عليها، والمؤلفة قلوبهم، وفي الرقاب، والغارمين، وفي سبيل الله، وابن السبيل."],
+["الزكاة","هل تجب الزكاة على المال المُقرَض (الدَّين) الذي عند الغير؟","نعم، عند جمهور الفقهاء تجب الزكاة على الدين إذا كان على شخص مليء يُرجى سداده، ويمكن إخراجها كل سنة أو عند قبض المال حسب الراجح عند بعض أهل العلم."],
+["أسئلة شائعة","متى يبدأ وقت صلاة الفجر ومتى ينتهي؟","يبدأ وقت الفجر بطلوع الفجر الصادق (الخيط الأبيض المعترض في الأفق)، وينتهي بطلوع الشمس."],
+["أسئلة شائعة","كم عدد ركعات الصلوات الخمس المفروضة؟","الفجر ركعتان، والظهر أربع ركعات، والعصر أربع ركعات، والمغرب ثلاث ركعات، والعشاء أربع ركعات."],
+["أسئلة شائعة","ما حكم من نام عن صلاة أو نسيها؟","يجب عليه أن يصليها فور استيقاظه أو تذكّرها، لحديث: (من نام عن صلاة أو نسيها فليصلّها إذا ذكرها، لا كفارة لها إلا ذلك)."],
+["أسئلة شائعة","هل يجوز الجمع بين الصلاتين؟","يجوز الجمع بين الظهر والعصر، وبين المغرب والعشاء، للمسافر سفر قصر، وللمريض ومن في حكمه، وفي المطر الشديد عند بعض أهل العلم، وذلك تيسيرًا ورفعًا للحرج."]
+];
+const qaListEl = document.getElementById('qaList');
+qaListEl.innerHTML = qaData.map((q,i)=>`
+  <div class="qa">
+    <button class="q" data-i="${i}">
+      <span>${q[1]}</span>
+      <span class="tag">${q[0]}</span>
+      <span class="plus">+</span>
+    </button>
+    <div class="a"><p>${q[2]}</p></div>
+  </div>
+`).join('');
+qaListEl.addEventListener('click', e=>{
+  const btn = e.target.closest('button.q');
+  if(!btn) return;
+  btn.closest('.qa').classList.toggle('open');
+});
+
+/* ============ INSTALL TO HOME SCREEN ============ */
+(function(){
+  const installBtn = document.getElementById('installBtn');
+  const installBtnText = document.getElementById('installBtnText');
+  const installNote = document.getElementById('installNote');
+  const iosModal = document.getElementById('iosModal');
+  const closeIosModal = document.getElementById('closeIosModal');
+
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+  const ua = window.navigator.userAgent || '';
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroidChrome = /Android/.test(ua) && /Chrome/.test(ua);
+
+  let deferredPrompt = null;
+
+  if (isStandalone) {
+    installNote.textContent = 'الموقع مضاف بالفعل إلى شاشتك، أهلًا بعودتك 🌅';
+  } else if (isIOS) {
+    // iOS Safari has no programmatic install prompt — show manual instructions.
+    installBtn.style.display = 'inline-flex';
+    installBtn.addEventListener('click', ()=> iosModal.classList.add('open'));
+    closeIosModal.addEventListener('click', ()=> iosModal.classList.remove('open'));
+    iosModal.addEventListener('click', (e)=>{ if(e.target === iosModal) iosModal.classList.remove('open'); });
+  } else {
+    // Android Chrome / Edge / other Chromium browsers support beforeinstallprompt.
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+    });
+    installBtn.addEventListener('click', async ()=>{
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if(choice.outcome === 'accepted'){
+        installBtnText.textContent = 'تمت الإضافة ✓';
+        installNote.textContent = 'ستجد أيقونة الفجر على شاشتك الرئيسية';
+        setTimeout(()=>{ installBtn.style.display = 'none'; }, 2500);
+      }
+      deferredPrompt = null;
+    });
+    window.addEventListener('appinstalled', ()=>{
+      installBtn.style.display = 'none';
+      installNote.textContent = 'تمت إضافة الفجر إلى شاشتك، جزاك الله خيرًا 🌅';
+    });
+    // Fallback: if beforeinstallprompt never fires (already installed, or unsupported),
+    // don't show a dead button.
+    if(!isAndroidChrome){
+      setTimeout(()=>{ if(!deferredPrompt) installBtn.style.display = 'none'; }, 3000);
+    }
+  }
+})();
+
+/* Register service worker for installability + basic offline shell caching. */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{ /* ignore on unsupported hosts */ });
+  });
+}
+</script>
+</body>
+</html>
