@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ادعم استمرار الموقع | الفجر - Dawn.ly</title>
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#0f4c43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0d1b2a;
+    --night-2:#132a3d;
+    --teal:#0f4c43;
+    --teal-2:#146157;
+    --gold:#c9a227;
+    --gold-light:#e6c65c;
+    --dawn:#e2703a;
+    --cream:#faf5e9;
+    --cream-2:#f1e8d3;
+    --ink:#182620;
+    --muted:#5c6b63;
+    --line:#e2d8bd;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Cairo',sans-serif;
+    line-height:1.8;
+  }
+  .amiri{font-family:'Amiri',serif;}
+
+  .horizon{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg,var(--night) 0%, var(--night-2) 40%, var(--teal) 75%, var(--dawn) 100%);
+    padding:22px 20px 70px;
+    text-align:center;
+    color:var(--cream);
+  }
+  .horizon::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-70px;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    transform:translateX(-50%);
+    background:radial-gradient(circle at 50% 40%, var(--gold-light), var(--gold) 55%, transparent 70%);
+    box-shadow:0 0 60px 20px rgba(230,198,92,.35);
+  }
+  .horizon .back-link{
+    position:relative; z-index:2;
+    display:inline-flex; align-items:center; gap:6px;
+    color:rgba(250,245,233,.85);
+    text-decoration:none;
+    font-size:.85rem;
+    border:1px solid rgba(250,245,233,.35);
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .horizon .back-link:hover{ background:rgba(250,245,233,.1); }
+  .horizon h1{
+    position:relative; z-index:2;
+    font-family:'Amiri',serif;
+    font-size:1.9rem;
+    margin:6px 0 4px;
+    color:var(--gold-light);
+    text-shadow:0 2px 18px rgba(0,0,0,.4);
+  }
+  .horizon p.tag{
+    position:relative; z-index:2;
+    margin:6px auto 0;
+    max-width:420px;
+    color:rgba(250,245,233,.85);
+    font-size:.92rem;
+  }
+
+  main{ max-width:640px; margin:0 auto; padding:0 18px 70px; }
+
+  .support-card{
+    background:linear-gradient(180deg,#fff, var(--cream-2));
+    border:1.5px dashed var(--gold);
+    border-radius:18px;
+    padding:28px 24px;
+    text-align:center;
+    margin-top:-40px;
+    position:relative;
+    z-index:3;
+    box-shadow:0 10px 30px rgba(20,40,35,.08);
+  }
+  .support-card h2{
+    font-family:'Amiri',serif;
+    color:var(--teal);
+    font-size:1.4rem;
+    margin:0 0 6px;
+  }
+  .support-card p.lead{
+    color:var(--muted);
+    font-size:.92rem;
+    margin:0 0 20px;
+  }
+  .support-row{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:12px;
+    text-align:right;
+  }
+  .support-row .label{
+    font-size:.76rem;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .support-row .value{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    color:var(--ink);
+    direction:ltr;
+    unicode-bidi:plaintext;
+    word-break:break-all;
+  }
+  .support-row button.copy-btn{
+    flex:none;
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:9px 16px;
+    font-family:'Cairo',sans-serif;
+    font-size:.85rem;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .support-row button.copy-btn:hover{ background:var(--teal-2); }
+  .support-name{
+    font-size:.95rem;
+    color:var(--ink);
+    margin:16px 0 0;
+  }
+  .support-name strong{ color:var(--teal); }
+  .support-disclaimer{
+    margin-top:18px;
+    font-size:.82rem;
+    color:var(--muted);
+    line-height:1.8;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+
+  .divider{
+    height:14px; margin:40px 0 26px;
+    background-repeat:repeat-x; background-position:center;
+    opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='14'><path d='M14 0 L18 4 L14 8 L10 4 Z M14 6 L18 10 L14 14 L10 10 Z' fill='%23c9a227'/></svg>");
+  }
+
+  .dua-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:24px 22px;
+  }
+  .dua-card .idx{
+    display:inline-block;
+    background:var(--teal);
+    color:#fff;
+    font-size:.75rem;
+    padding:3px 12px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .dua-card .arabic{
+    font-family:'Amiri',serif;
+    font-size:1.3rem;
+    line-height:2.2;
+    color:var(--ink);
+  }
+  .dua-card .src{
+    margin-top:14px;
+    font-size:.85rem;
+    color:var(--muted);
+  }
+
+  footer{
+    text-align:center; color:var(--muted); font-size:.85rem;
+    padding:30px 16px 50px;
+  }
+  footer .fname{ color:var(--gold); font-family:'Amiri',serif; font-size:1.05rem; }
+</style>
+</head>
+<body>
+
+<header class="horizon">
+  <a class="back-link" href="index.html">→ العودة إلى الموقع</a>
+  <h1>ادعم استمرار الموقع</h1>
+  <p class="tag">مساهمتك تُعين على تطوير "الفجر" واستمرار تشغيله وتغطية تكاليف الاستضافة</p>
+</header>
+
+<main>
+  <div class="support-card">
+    <h2>🤍 طرق الدعم</h2>
+    <p class="lead">يمكنك التحويل عبر أحد الحسابين التاليين</p>
+
+    <div class="support-row">
+      <div>
+        <div class="label">حساب الجمهورية</div>
+        <div class="value" id="accNum">037201000111044</div>
+      </div>
+      <button class="copy-btn" data-copy="037201000111044">نسخ</button>
+    </div>
+
+    <div class="support-row">
+      <div>
+        <div class="label">رقم الآيبان IBAN</div>
+        <div class="value" id="ibanNum">LY64002037037201000111044</div>
+      </div>
+      <button class="copy-btn" data-copy="LY64002037037201000111044">نسخ</button>
+    </div>
+
+    <p class="support-name">باسم المهندس / <strong>ناجي ألتير</strong></p>
+
+    <p class="support-disclaimer">
+      جميع التحويلات مخصصة لتطوير واستمرار تشغيل الموقع وتغطية تكاليفه فقط، ولسنا جهة تجمع تبرعات.
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="dua-card">
+    <span class="idx">دعاء</span>
+    <div class="arabic amiri">
+      اللهمَّ إليكَ أشكو ضَعْفَ قوَّتي، وقلَّةَ حيلتي، وهَواني على النَّاسِ، يا أرحمَ الرَّاحمينَ، أنت ربُّ المستضعفينَ وأنت ربِّي، إلى من تَكِلُني؟ إلى بعيدٍ يتجهَّمُني؟ أم إلى عدوٍّ ملَّكتَه أمري؟ إن لم يكن بك غضبٌ عليَّ فلا أبالي، ولكنَّ عافيتَك هي أوسعُ لي، أعوذُ بنورِ وجهِكَ الذي أشرقتْ له الظُّلماتُ، وصلَحَ عليه أمرُ الدُّنيا والآخرةِ، أن يَنزِلَ بي غضبُك، أو يَحِلَّ عليَّ سَخَطُك، لكَ العُتبى حتَّى ترضى، ولا حَولَ ولا قوَّةَ إلَّا بِكَ.
+    </div>
+    <div class="src">دعاء النبي ﷺ في الطائف — من كتب السيرة النبوية، وله شواهد يحسّن بها عند أهل العلم</div>
+  </div>
+</main>
+
+<footer>
+  <div class="fname">الفجر · Dawn.ly</div>
+  <p><a href="index.html" style="color:var(--teal);">← العودة إلى الصفحة الرئيسية</a></p>
+</footer>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    const text = btn.dataset.copy;
+    const original = btn.textContent;
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+      }else{
+        const tmp = document.createElement('textarea');
+        tmp.value = text;
+        tmp.style.position = 'fixed';
+        tmp.style.opacity = '0';
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        document.body.removeChild(tmp);
+      }
+      btn.textContent = 'تم النسخ ✓';
+    }catch(err){
+      btn.textContent = 'انسخ يدويًا';
+    }
+    setTimeout(()=>{ btn.textContent = original; }, 2000);
+  });
+});
+</script>
+</body>
+</html>
