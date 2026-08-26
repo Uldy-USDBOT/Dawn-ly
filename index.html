@@ -316,6 +316,42 @@
 
   /* ---------- Install to home screen ---------- */
   .install-wrap{ text-align:center; margin:34px 0 8px; }
+
+  /* ---------- Support banner (top of homepage, links to support.html) ---------- */
+  .support-banner-wrap{
+    max-width:900px;
+    margin:14px auto 0;
+    padding:0 18px;
+  }
+  .support-banner{
+    display:block;
+    background:linear-gradient(120deg,var(--teal),var(--teal-2));
+    border-radius:16px;
+    padding:16px 18px;
+    margin-bottom:22px;
+    text-decoration:none;
+    color:var(--cream);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 8px 22px rgba(15,76,68,.22);
+    transition:transform .15s ease;
+  }
+  .support-banner:hover{ transform:translateY(-2px); }
+  .support-banner .icon{ font-size:1.5rem; flex:none; }
+  .support-banner .txt{ flex:1; }
+  .support-banner .txt strong{
+    display:block;
+    font-family:'Amiri',serif;
+    font-size:1.05rem;
+    margin-bottom:2px;
+  }
+  .support-banner .txt small{
+    display:block;
+    font-size:.8rem;
+    color:rgba(250,245,233,.85);
+  }
+  .support-banner .arrow{ font-size:1.2rem; flex:none; opacity:.85; }
   #installBtn{
     display:inline-flex; align-items:center; gap:10px;
     background:linear-gradient(135deg,var(--teal),var(--teal-2));
@@ -377,7 +413,7 @@
   <div class="brand">
     <div class="domain">Dawn.ly</div>
     <h1>الفَجْر</h1>
-    <p class="tag">بوابتك اليومية إلى مواقيت الصلاة، والقرآن الكريم، والسنة النبوية، والدعاء — من مكان واحد</p>
+    <p class="tag">بوابتك اليومية إلى مواقيت الصلاة، والقرآن الكريم، والسنة النبوية، والدعاء — من طرابلس إلى كل مكان</p>
   </div>
 </header>
 
@@ -415,7 +451,7 @@
       <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 8l-6 5 2 7-6-4.5L6 20l2-7-6-5 7.5-.5z"/></svg>
       <h2>القرآن الكريم</h2>
     </div>
-    <p class="section-sub">استمع للقرآن الكريم كاملاً — اختر السورة والقارئ.المفضل لك </p>
+    <p class="section-sub">استمع للقرآن الكريم كاملاً — اختر السورة والقارئ. إن لم يعمل مقطع معيّن، أعِد اختيار السورة أو جرّب قارئًا آخر</p>
     <div class="controls-row">
       <select id="reciterSelect"></select>
       <input class="search-box" style="margin:0;" id="surahSearch" placeholder="ابحث عن سورة...">
@@ -466,6 +502,17 @@
     <span id="installBtnText">أضف الموقع إلى شاشة هاتفك</span>
   </button>
   <span id="installNote"></span>
+</div>
+
+<div class="support-banner-wrap">
+  <a href="support.html" class="support-banner">
+    <span class="icon">🤍</span>
+    <span class="txt">
+      <strong>ادعم استمرار الموقع</strong>
+      <small>تبرعك يساعد على تطوير "الفجر" والاستمرار في تشغيله</small>
+    </span>
+    <span class="arrow">←</span>
+  </a>
 </div>
 
 <div class="modal-overlay" id="installModal">
