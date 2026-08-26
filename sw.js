@@ -2,6 +2,7 @@ const CACHE_NAME = 'alfajr-dawnly-v1';
 const CORE_ASSETS = [
   './',
   './index.html',
+  './support.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
