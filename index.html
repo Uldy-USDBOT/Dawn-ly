@@ -6,8 +6,8 @@
 <title>الفجر | Dawn.ly</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f4c43">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -468,15 +468,15 @@
   <span id="installNote"></span>
 </div>
 
-<div class="modal-overlay" id="iosModal">
+<div class="modal-overlay" id="installModal">
   <div class="modal-sheet">
-    <h3>📲 إضافة "الفجر" إلى الشاشة الرئيسية</h3>
-    <ol>
+    <h3 id="installModalTitle">📲 إضافة "الفجر" إلى الشاشة الرئيسية</h3>
+    <ol id="installModalSteps">
       <li>اضغط على أيقونة المشاركة <span class="share-icon">⬆︎</span> في شريط المتصفح (سفاري) أسفل الشاشة أو أعلاها.</li>
       <li>مرّر للأسفل واختر <strong>"إضافة إلى الشاشة الرئيسية"</strong> (Add to Home Screen).</li>
       <li>اضغط <strong>"إضافة"</strong> أعلى الشاشة، وستظهر أيقونة الفجر على هاتفك مثل أي تطبيق.</li>
     </ol>
-    <button class="modal-close" id="closeIosModal">حسنًا، فهمت</button>
+    <button class="modal-close" id="closeInstallModal">حسنًا، فهمت</button>
   </div>
 </div>
 
@@ -561,16 +561,47 @@ const surahs = [
  "القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر",
  "المسد","الإخلاص","الفلق","الناس"
 ];
-const reciters = [
-  {id:'ar.alafasy', name:'مشاري راشد العفاسي'},
-  {id:'ar.abdulbasitmurattal', name:'عبد الباسط عبد الصمد (مرتّل)'},
-  {id:'ar.abdurrahmaansudais', name:'عبد الرحمن السديس'}
-];
-/* Different reciters are hosted at different bitrates on the CDN — try each in turn
-   so a missing 128kbps file (etc.) doesn't look like a totally broken reciter. */
-const AUDIO_BITRATES = [128, 192, 64, 48];
 const reciterSelect = document.getElementById('reciterSelect');
-reciterSelect.innerHTML = reciters.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+reciterSelect.innerHTML = `<option value="">جارٍ تحميل قائمة القراء...</option>`;
+
+/* We fetch the reciter list (with their real audio server URLs) live from the
+   official mp3quran.net API instead of guessing CDN paths — this is what
+   fixed reciters that previously failed (e.g. Al-Sudais). */
+const TARGET_RECITERS = [
+  {match:'العفاسي', label:'مشاري راشد العفاسي'},
+  {match:'عبد الباسط', label:'عبد الباسط عبد الصمد'},
+  {match:'السديس', label:'عبد الرحمن السديس'},
+  {match:'الحصري', label:'محمود خليل الحصري'},
+  {match:'المنشاوي', label:'محمد صديق المنشاوي'},
+  {match:'الشاطري', label:'أبو بكر الشاطري'}
+];
+let reciterServers = {}; // label -> server base URL
+
+async function loadReciters(){
+  try{
+    const res = await fetch('https://mp3quran.net/api/v3/reciters?language=ar&rewaya=1');
+    if(!res.ok) throw new Error('network');
+    const json = await res.json();
+    const all = json.reciters || [];
+    const found = [];
+    TARGET_RECITERS.forEach(target=>{
+      const rec = all.find(r => r.name && r.name.includes(target.match));
+      if(rec && rec.moshaf && rec.moshaf.length){
+        // Prefer a moshaf covering all 114 surahs.
+        const moshaf = rec.moshaf.find(m => Number(m.surah_total) === 114) || rec.moshaf[0];
+        if(moshaf && moshaf.server){
+          found.push({label: target.label, server: moshaf.server});
+        }
+      }
+    });
+    if(!found.length) throw new Error('no reciters matched');
+    found.forEach(r => reciterServers[r.label] = r.server);
+    reciterSelect.innerHTML = found.map(r=>`<option value="${r.label}">${r.label}</option>`).join('');
+  }catch(err){
+    reciterSelect.innerHTML = `<option value="">تعذر تحميل قائمة القراء</option>`;
+    nowPlaying.textContent = 'تعذر جلب قائمة القراء حاليًا. تحقق من اتصالك بالإنترنت وحاول مجددًا.';
+  }
+}
 
 const surahListEl = document.getElementById('surahList');
 function renderSurahs(filter=''){
@@ -589,24 +620,20 @@ document.getElementById('surahSearch').addEventListener('input', e=>renderSurahs
 
 const audioPlayer = document.getElementById('audioPlayer');
 const nowPlaying = document.getElementById('nowPlaying');
-let currentPlayAttempt = 0;
 
-function playSurah(reciter, num, name){
-  currentPlayAttempt++;
-  const attemptId = currentPlayAttempt;
-  tryBitrate(reciter, num, name, 0, attemptId);
-}
-function tryBitrate(reciter, num, name, bitrateIdx, attemptId){
-  if(attemptId !== currentPlayAttempt) return; // a newer selection superseded this one
-  if(bitrateIdx >= AUDIO_BITRATES.length){
-    nowPlaying.textContent = `تعذر تشغيل سورة ${name} بصوت هذا القارئ حاليًا. جرّب قارئًا آخر.`;
+function playSurah(reciterLabel, num, name){
+  const server = reciterServers[reciterLabel];
+  if(!server){
+    nowPlaying.textContent = 'اختر قارئًا أولاً.';
     return;
   }
-  const bitrate = AUDIO_BITRATES[bitrateIdx];
-  audioPlayer.onerror = ()=> tryBitrate(reciter, num, name, bitrateIdx+1, attemptId);
-  audioPlayer.src = `https://cdn.islamic.network/quran/audio-surah/${bitrate}/${reciter}/${num}.mp3`;
-  audioPlayer.play().catch(()=>{ /* handled by onerror if the file itself is bad */ });
-  nowPlaying.textContent = `الآن: سورة ${name}`;
+  const padded = String(num).padStart(3,'0');
+  audioPlayer.onerror = ()=>{
+    nowPlaying.textContent = `تعذر تشغيل سورة ${name} بصوت ${reciterLabel} حاليًا. جرّب قارئًا آخر.`;
+  };
+  audioPlayer.src = `${server}${padded}.mp3`;
+  audioPlayer.play().catch(()=>{});
+  nowPlaying.textContent = `الآن: سورة ${name} — ${reciterLabel}`;
 }
 
 surahListEl.addEventListener('click', e=>{
@@ -620,6 +647,8 @@ reciterSelect.addEventListener('change', ()=>{
   const playing = document.querySelector('.surah-item.playing');
   if(playing) playSurah(reciterSelect.value, playing.dataset.num, playing.dataset.name);
 });
+
+loadReciters();
 
 /* ============ 3. HADITH (Al-Arba'in An-Nawawiyyah) ============ */
 const hadiths = [
@@ -781,53 +810,110 @@ qaListEl.addEventListener('click', e=>{
   const installBtn = document.getElementById('installBtn');
   const installBtnText = document.getElementById('installBtnText');
   const installNote = document.getElementById('installNote');
-  const iosModal = document.getElementById('iosModal');
-  const closeIosModal = document.getElementById('closeIosModal');
+  const installModal = document.getElementById('installModal');
+  const installModalTitle = document.getElementById('installModalTitle');
+  const installModalSteps = document.getElementById('installModalSteps');
+  const closeInstallModal = document.getElementById('closeInstallModal');
 
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     || window.navigator.standalone === true;
   const ua = window.navigator.userAgent || '';
   const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-  const isAndroidChrome = /Android/.test(ua) && /Chrome/.test(ua);
+  const isAndroid = /Android/.test(ua);
+  const isFirefox = /Firefox/.test(ua);
+  const isSecureContext = window.isSecureContext; // false on file:// or plain http://
 
   let deferredPrompt = null;
 
+  function showModal(title, stepsHtml){
+    installModalTitle.textContent = title;
+    installModalSteps.innerHTML = stepsHtml;
+    installModal.classList.add('open');
+  }
+
+  closeInstallModal.addEventListener('click', ()=> installModal.classList.remove('open'));
+  installModal.addEventListener('click', (e)=>{ if(e.target === installModal) installModal.classList.remove('open'); });
+
   if (isStandalone) {
+    installBtn.style.display = 'none';
     installNote.textContent = 'الموقع مضاف بالفعل إلى شاشتك، أهلًا بعودتك 🌅';
-  } else if (isIOS) {
-    // iOS Safari has no programmatic install prompt — show manual instructions.
-    installBtn.style.display = 'inline-flex';
-    installBtn.addEventListener('click', ()=> iosModal.classList.add('open'));
-    closeIosModal.addEventListener('click', ()=> iosModal.classList.remove('open'));
-    iosModal.addEventListener('click', (e)=>{ if(e.target === iosModal) iosModal.classList.remove('open'); });
-  } else {
-    // Android Chrome / Edge / other Chromium browsers support beforeinstallprompt.
-    window.addEventListener('beforeinstallprompt', (e)=>{
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'inline-flex';
+    return;
+  }
+
+  // The button is always visible and always does something useful — it never
+  // silently disappears, even if the automatic browser prompt isn't available.
+  installBtn.style.display = 'inline-flex';
+
+  if (!isSecureContext) {
+    // file:// or plain http:// — real installability needs HTTPS, so we can only explain that.
+    installBtn.addEventListener('click', ()=>{
+      showModal('⚠️ يلزم رفع الموقع أولاً', `
+        <li>خاصية "الإضافة إلى الشاشة الرئيسية" تعمل فقط عندما يكون الموقع مستضافًا على رابط حقيقي يبدأ بـ <strong>https://</strong> (مثل dawn.ly بعد رفعه).</li>
+        <li>فتح الملف مباشرة من جهازك (file://) لا يفعّل هذه الخاصية في أي متصفح.</li>
+        <li>بعد رفع كل الملفات (index.html وmanifest.json وsw.js ومجلد icons) معًا على الاستضافة، أعد فتح الموقع من رابطه الحقيقي وستعمل الأيقونة وزر الإضافة تلقائيًا.</li>
+      `);
     });
-    installBtn.addEventListener('click', async ()=>{
-      if(!deferredPrompt) return;
+    installNote.textContent = 'يعمل هذا الزر فعليًا بعد رفع الموقع على استضافة بـ HTTPS.';
+    return;
+  }
+
+  if (isIOS) {
+    // iOS Safari has no programmatic install prompt — show manual instructions.
+    installBtn.addEventListener('click', ()=>{
+      showModal('📲 إضافة "الفجر" إلى الشاشة الرئيسية', `
+        <li>اضغط على أيقونة المشاركة <span class="share-icon">⬆︎</span> أسفل شاشة سفاري (أو أعلاها في بعض الإصدارات).</li>
+        <li>مرّر للأسفل واختر <strong>"إضافة إلى الشاشة الرئيسية"</strong> (Add to Home Screen).</li>
+        <li>اضغط <strong>"إضافة"</strong> أعلى الشاشة، وستظهر أيقونة الفجر على هاتفك مثل أي تطبيق.</li>
+      `);
+    });
+    return;
+  }
+
+  // Android Chrome / Edge / other Chromium browsers can support beforeinstallprompt.
+  window.addEventListener('beforeinstallprompt', (e)=>{
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  installBtn.addEventListener('click', async ()=>{
+    if (deferredPrompt) {
       deferredPrompt.prompt();
       const choice = await deferredPrompt.userChoice;
-      if(choice.outcome === 'accepted'){
+      if (choice.outcome === 'accepted') {
         installBtnText.textContent = 'تمت الإضافة ✓';
         installNote.textContent = 'ستجد أيقونة الفجر على شاشتك الرئيسية';
-        setTimeout(()=>{ installBtn.style.display = 'none'; }, 2500);
       }
       deferredPrompt = null;
-    });
-    window.addEventListener('appinstalled', ()=>{
-      installBtn.style.display = 'none';
-      installNote.textContent = 'تمت إضافة الفجر إلى شاشتك، جزاك الله خيرًا 🌅';
-    });
-    // Fallback: if beforeinstallprompt never fires (already installed, or unsupported),
-    // don't show a dead button.
-    if(!isAndroidChrome){
-      setTimeout(()=>{ if(!deferredPrompt) installBtn.style.display = 'none'; }, 3000);
+      return;
     }
-  }
+    // Chrome/Edge sometimes delay or skip the automatic prompt (engagement
+    // heuristics, or it already fired once) — fall back to manual steps
+    // instead of leaving the button doing nothing.
+    if (isAndroid) {
+      showModal('📲 إضافة "الفجر" إلى الشاشة الرئيسية', `
+        <li>اضغط على قائمة المتصفح (⋮ ثلاث نقاط) أعلى الشاشة.</li>
+        <li>اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"إضافة إلى الشاشة الرئيسية"</strong>.</li>
+        <li>أكّد الإضافة، وستظهر أيقونة الفجر على شاشتك الرئيسية.</li>
+      `);
+    } else if (isFirefox) {
+      showModal('📲 إضافة "الفجر" إلى شاشتك', `
+        <li>فايرفوكس على الحاسوب لا يدعم التثبيت التلقائي لهذا النوع من المواقع.</li>
+        <li>على الهاتف: افتح قائمة المتصفح (⋮) واختر <strong>"تثبيت"</strong> أو <strong>"إضافة إلى الشاشة الرئيسية"</strong> إن ظهرت.</li>
+        <li>بديل عملي: أنشئ اختصارًا للرابط في المفضلة لعودة سريعة.</li>
+      `);
+    } else {
+      showModal('📲 إضافة "الفجر" إلى جهازك', `
+        <li>ابحث عن أيقونة التثبيت ⊕ داخل شريط عنوان المتصفح (تظهر في كروم وإيدج على الحاسوب).</li>
+        <li>أو افتح قائمة المتصفح (⋮ أو ≡) وابحث عن <strong>"تثبيت الفجر"</strong> أو <strong>"Install"</strong>.</li>
+        <li>إن لم تظهر الخيارات، أضف الصفحة إلى المفضلة للرجوع إليها بسرعة.</li>
+      `);
+    }
+  });
+
+  window.addEventListener('appinstalled', ()=>{
+    installBtn.style.display = 'none';
+    installNote.textContent = 'تمت إضافة الفجر إلى شاشتك، جزاك الله خيرًا 🌅';
+  });
 })();
 
 /* Register service worker for installability + basic offline shell caching. */
