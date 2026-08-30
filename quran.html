@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القرآن الكريم | الفجر - Dawn.ly</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a3c5e">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="استمع للقرآن الكريم كاملًا بصوت نخبة من القراء، واقرأ نصه المكتوب بالرسم العثماني">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="container">
+
+    <header>
+        <a href="index.html" class="brand-link">
+            <div class="domain-tag">Dawn.ly</div>
+            <h1>الفَجْر</h1>
+        </a>
+        <p class="subtitle">القُرْآنُ الكَرِيمُ — اسْتِمَاعٌ وَقِرَاءَةٌ</p>
+    </header>
+
+    <nav>
+        <a href="index.html">مواقيت الصلاة</a>
+        <a href="quran.html" class="active">القرآن الكريم</a>
+        <a href="hadith.html">الأحاديث النووية</a>
+        <a href="duas.html">الأدعية</a>
+        <a href="qa.html">سؤال وجواب</a>
+    </nav>
+
+    <div class="section-card">
+        <h2 class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+            القُرْآنُ الكَرِيمُ
+        </h2>
+        <p class="section-note">استمع للقرآن الكريم كاملاً واقرأ نصّه — اختر السورة والقارئ</p>
+        <div class="controls-row">
+            <select id="reciterSelect"><option value="">جارٍ تحميل قائمة القراء...</option></select>
+            <input class="search-box" id="surahSearch" placeholder="ابحث عن سورة...">
+        </div>
+        <div class="surah-list" id="surahList"></div>
+        <div class="player-bar">
+            <span class="now-playing" id="nowPlaying">اختر سورة للاستماع أو القراءة</span>
+            <audio id="audioPlayer" controls></audio>
+        </div>
+        <button class="quran-text-toggle" id="toggleQuranText">📖 إظهار النص المكتوب</button>
+        <div class="quran-text-box" id="quranTextBox">
+            <div class="surah-heading" id="quranTextHeading"></div>
+            <div class="quran-text-status" id="quranTextStatus"></div>
+            <div class="ayahs" id="quranTextAyahs"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-note">
+            <div class="fname">الفجر · Dawn.ly</div>
+            <p><a href="support.html">ادعم استمرار الموقع</a></p>
+        </div>
+    </footer>
+</div>
+
+<script>
+const surahs = [
+ "الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس",
+ "هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه",
+ "الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم",
+ "لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر",
+ "فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق",
+ "الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة",
+ "الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج",
+ "نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس",
+ "التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد",
+ "الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات",
+ "القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر",
+ "المسد","الإخلاص","الفلق","الناس"
+];
+const TARGET_RECITERS = [
+  {match:'العفاسي', label:'مشاري راشد العفاسي'},
+  {match:'عبد الباسط', label:'عبد الباسط عبد الصمد'},
+  {match:'السديس', label:'عبد الرحمن السديس'},
+  {match:'الحصري', label:'محمود خليل الحصري'},
+  {match:'المنشاوي', label:'محمد صديق المنشاوي'},
+  {match:'الشاطري', label:'أبو بكر الشاطري'}
+];
+let reciterServers = {};
+const reciterSelect = document.getElementById('reciterSelect');
+
+async function loadReciters(){
+  try{
+    const res = await fetch('https://mp3quran.net/api/v3/reciters?language=ar&rewaya=1');
+    if(!res.ok) throw new Error('network');
+    const json = await res.json();
+    const all = json.reciters || [];
+    const found = [];
+    TARGET_RECITERS.forEach(target=>{
+      const rec = all.find(r => r.name && r.name.includes(target.match));
+      if(rec && rec.moshaf && rec.moshaf.length){
+        const moshaf = rec.moshaf.find(m => Number(m.surah_total) === 114) || rec.moshaf[0];
+        if(moshaf && moshaf.server) found.push({label: target.label, server: moshaf.server});
+      }
+    });
+    if(!found.length) throw new Error('no reciters matched');
+    found.forEach(r => reciterServers[r.label] = r.server);
+    reciterSelect.innerHTML = found.map(r=>`<option value="${r.label}">${r.label}</option>`).join('');
+  }catch(err){
+    reciterSelect.innerHTML = `<option value="">تعذر تحميل قائمة القراء</option>`;
+    nowPlaying.textContent = 'تعذر جلب قائمة القراء حاليًا. تحقق من اتصالك بالإنترنت وحاول مجددًا.';
+  }
+}
+
+const surahListEl = document.getElementById('surahList');
+function renderSurahs(filter=''){
+  const f = filter.trim();
+  surahListEl.innerHTML = surahs.map((name,i)=>{
+    const num = i+1;
+    if(f && !name.includes(f) && !String(num).includes(f)) return '';
+    return `<div class="surah-item" data-num="${num}" data-name="${name}">
+      <div class="num">سورة رقم ${num}</div>
+      <div class="nm">${name}</div>
+    </div>`;
+  }).join('');
+}
+renderSurahs();
+document.getElementById('surahSearch').addEventListener('input', e=>renderSurahs(e.target.value));
+
+const audioPlayer = document.getElementById('audioPlayer');
+const nowPlaying = document.getElementById('nowPlaying');
+
+function playSurah(reciterLabel, num, name){
+  const server = reciterServers[reciterLabel];
+  if(!server){ nowPlaying.textContent = 'اختر قارئًا أولاً.'; return; }
+  const padded = String(num).padStart(3,'0');
+  audioPlayer.onerror = ()=>{ nowPlaying.textContent = `تعذر تشغيل سورة ${name} بصوت ${reciterLabel} حاليًا. جرّب قارئًا آخر.`; };
+  audioPlayer.src = `${server}${padded}.mp3`;
+  audioPlayer.play().catch(()=>{});
+  nowPlaying.textContent = `الآن: سورة ${name} — ${reciterLabel}`;
+}
+
+let currentSurahNum = null, currentSurahName = null;
+surahListEl.addEventListener('click', e=>{
+  const item = e.target.closest('.surah-item');
+  if(!item) return;
+  document.querySelectorAll('.surah-item.playing').forEach(el=>el.classList.remove('playing'));
+  item.classList.add('playing');
+  currentSurahNum = item.dataset.num; currentSurahName = item.dataset.name;
+  playSurah(reciterSelect.value, currentSurahNum, currentSurahName);
+  if(document.getElementById('quranTextBox').classList.contains('open')) loadQuranText(currentSurahNum, currentSurahName);
+});
+reciterSelect.addEventListener('change', ()=>{
+  const playing = document.querySelector('.surah-item.playing');
+  if(playing) playSurah(reciterSelect.value, playing.dataset.num, playing.dataset.name);
+});
+loadReciters();
+
+const toggleBtn = document.getElementById('toggleQuranText');
+const textBox = document.getElementById('quranTextBox');
+const textHeading = document.getElementById('quranTextHeading');
+const textStatus = document.getElementById('quranTextStatus');
+const textAyahs = document.getElementById('quranTextAyahs');
+
+toggleBtn.addEventListener('click', ()=>{
+  const opening = !textBox.classList.contains('open');
+  textBox.classList.toggle('open');
+  toggleBtn.textContent = opening ? '📖 إخفاء النص المكتوب' : '📖 إظهار النص المكتوب';
+  if(opening){
+    if(currentSurahNum){ loadQuranText(currentSurahNum, currentSurahName); }
+    else { textStatus.textContent = 'اختر سورة أولاً من القائمة أعلاه لعرض نصها.'; textAyahs.innerHTML=''; textHeading.textContent=''; }
+  }
+});
+
+async function loadQuranText(num, name){
+  textHeading.textContent = `سورة ${name}`;
+  textStatus.textContent = 'جارٍ تحميل النص...';
+  textAyahs.innerHTML = '';
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/surah/${num}/quran-uthmani`);
+    if(!res.ok) throw new Error('network');
+    const json = await res.json();
+    const ayahs = json.data.ayahs || [];
+    textAyahs.innerHTML = ayahs.map(a => `${a.text} <span class="ayah-num">${a.numberInSurah}</span>`).join(' ');
+    textStatus.textContent = '';
+  }catch(err){
+    textStatus.textContent = 'تعذر تحميل نص السورة حاليًا. تحقق من اتصالك بالإنترنت وحاول مجددًا.';
+  }
+}
+</script>
+<script src="app.js"></script>
+</body>
+</html>
