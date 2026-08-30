@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفجر | مواقيت الصلاة - Dawn.ly</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a3c5e">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="الفجر">
+<meta name="description" content="مواقيت الصلاة في طرابلس، ليبيا، وفضل صلاة الفجر وأدعيتها وأحاديثها">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="container">
+
+    <header>
+        <a href="index.html" class="brand-link">
+            <div class="header-art">
+                <svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#0f2027"/>
+                            <stop offset="55%" stop-color="#1a3c5e"/>
+                            <stop offset="100%" stop-color="#d4af37"/>
+                        </linearGradient>
+                        <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#f1c40f"/>
+                            <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <rect width="600" height="220" fill="url(#sky)" rx="18"/>
+                    <circle cx="300" cy="190" r="90" fill="url(#sun)"/>
+                    <circle cx="300" cy="190" r="34" fill="#f1c40f"/>
+                    <g fill="#0f2027">
+                        <rect x="60" y="150" width="10" height="55"/>
+                        <circle cx="65" cy="140" r="10"/>
+                        <rect x="520" y="140" width="10" height="65"/>
+                        <circle cx="525" cy="128" r="12"/>
+                        <path d="M150 205 L150 130 Q150 100 180 100 Q210 100 210 130 L210 205 Z"/>
+                        <circle cx="180" cy="88" r="9"/>
+                        <path d="M400 205 L400 145 Q400 118 425 118 Q450 118 450 145 L450 205 Z"/>
+                    </g>
+                    <circle cx="480" cy="45" r="16" fill="#f0f4f8" opacity=".9"/>
+                </svg>
+            </div>
+            <div class="domain-tag">Dawn.ly</div>
+            <h1>الفَجْر</h1>
+        </a>
+        <p class="subtitle">مَنْظُومَةُ العِبَادَاتِ اليَوْمِيَّةِ: مَوَاقِيتُ، وَقُرْآنٌ، وَسُنَّةٌ، وَدُعَاءٌ</p>
+    </header>
+
+    <nav>
+        <a href="index.html" class="active">مواقيت الصلاة</a>
+        <a href="quran.html">القرآن الكريم</a>
+        <a href="hadith.html">الأحاديث النووية</a>
+        <a href="duas.html">الأدعية</a>
+        <a href="qa.html">سؤال وجواب</a>
+    </nav>
+
+    <div class="section-card">
+        <h2 class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5l8.5 14.5h-17L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+            مَوَاقِيتُ الصَّلَاةِ
+        </h2>
+        <p class="section-note">حسب توقيت مدينة طرابلس، ليبيا — تحدَّث تلقائيًا من خدمة AlAdhan</p>
+        <div class="loc-line">
+            <span id="dateLine">جارٍ تحميل التاريخ...</span>
+            <span>📍 طرابلس، ليبيا</span>
+        </div>
+        <div id="timesStatus" class="status">جارٍ جلب مواقيت الصلاة...</div>
+        <div id="timesGrid" class="times-grid" style="display:none;"></div>
+        <div id="hijriLine" class="hijri"></div>
+    </div>
+
+    <div class="section-card">
+        <h2 class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            فَضْلُ صَلَاةِ الفَجْرِ
+        </h2>
+        <div id="fajrVirtueList"></div>
+        <div class="divider"></div>
+        <h2 class="section-title" style="font-size:1.5rem;">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            أَدْعِيَةُ الفَجْرِ
+        </h2>
+        <div id="fajrDuaList"></div>
+    </div>
+
+    <div class="install-wrap">
+        <button id="installBtn" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+            <span id="installBtnText">أضف الموقع إلى شاشة هاتفك</span>
+        </button>
+        <span id="installNote"></span>
+    </div>
+
+    <!-- Support icon/banner: only here, at the bottom of the homepage -->
+    <a href="support.html" class="support-banner">
+        <span class="icon">🤍</span>
+        <span class="txt">
+            <strong>ادعم استمرار الموقع</strong>
+            <small>تبرعك يساعد على تطوير "الفجر" والاستمرار في تشغيله</small>
+        </span>
+        <span>←</span>
+    </a>
+
+    <footer>
+        <div class="footer-note">
+            <div class="fname">الفجر · Dawn.ly</div>
+            <p>موقع تعريفي يهدف لتيسير الوصول إلى العبادات اليومية. يُنصح بمراجعة أهل علم موثوقين فيما يخص المسائل الفقهية التفصيلية.</p>
+        </div>
+    </footer>
+</div>
+
+<div class="modal-overlay" id="installModal">
+    <div class="modal-sheet">
+        <h3 id="installModalTitle">📲 إضافة "الفجر" إلى الشاشة الرئيسية</h3>
+        <ol id="installModalSteps"></ol>
+        <button class="modal-close" id="closeInstallModal">حسنًا، فهمت</button>
+    </div>
+</div>
+
+<script>
+/* ============ PRAYER TIMES (Aladhan API, Tripoli, Libya) ============ */
+async function loadPrayerTimes(){
+  const statusEl = document.getElementById('timesStatus');
+  const gridEl = document.getElementById('timesGrid');
+  const dateLine = document.getElementById('dateLine');
+  const hijriLine = document.getElementById('hijriLine');
+  try{
+    const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tripoli&country=Libya&method=5');
+    if(!res.ok) throw new Error('network');
+    const json = await res.json();
+    const t = json.data.timings;
+    const names = [
+      {key:'Fajr', ar:'الفجر'}, {key:'Sunrise', ar:'الشروق'}, {key:'Dhuhr', ar:'الظهر'},
+      {key:'Asr', ar:'العصر'}, {key:'Maghrib', ar:'المغرب'}, {key:'Isha', ar:'العشاء'}
+    ];
+    const now = new Date();
+    const nowMinutes = now.getHours()*60 + now.getMinutes();
+    function toMinutes(str){ const [h,m] = str.split(':').map(Number); return h*60+m; }
+    let closestIdx = 0, minDiff = Infinity;
+    names.forEach((n,i)=>{
+      const diff = nowMinutes - toMinutes(t[n.key].slice(0,5));
+      if(diff>=0 && diff<minDiff){ minDiff = diff; closestIdx = i; }
+    });
+    gridEl.innerHTML = names.map((n,i)=>`
+      <div class="time-box ${i===closestIdx?'now':''}">
+        <div class="name">${n.ar}</div>
+        <div class="val">${t[n.key].slice(0,5)}</div>
+      </div>`).join('');
+    statusEl.style.display='none';
+    gridEl.style.display='grid';
+    const gdate = json.data.date.gregorian;
+    const hdate = json.data.date.hijri;
+    const arMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    const arWeekdays = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const todayJs = new Date();
+    dateLine.textContent = `${arWeekdays[todayJs.getDay()]} ${gdate.day} ${arMonths[Number(gdate.month.number)-1]} ${gdate.year}`;
+    hijriLine.textContent = `${hdate.day} ${hdate.month.ar} ${hdate.year} هـ`;
+  }catch(err){
+    statusEl.textContent = 'تعذر جلب مواقيت الصلاة حاليًا. تحقق من اتصالك بالإنترنت وحاول مجددًا.';
+  }
+}
+loadPrayerTimes();
+
+/* ============ FAJR VIRTUE + DUAS ============ */
+const fajrHadiths = [
+  ["من صلَّى البَرْدَينِ دخل الجنَّة.", "رواه البخاري ومسلم — أي صلاتي الفجر والعصر"],
+  ["يتعاقبون فيكم ملائكة بالليل وملائكة بالنهار، ويجتمعون في صلاة الفجر وصلاة العصر، ثم يعرج الذين باتوا فيكم فيسألهم ربهم -وهو أعلم بهم-: كيف تركتم عبادي؟ فيقولون: تركناهم وهم يصلون، وأتيناهم وهم يصلون.", "رواه البخاري ومسلم — عن أبي هريرة رضي الله عنه"],
+  ["ركعتا الفجر خير من الدنيا وما فيها.", "رواه مسلم — عن عائشة رضي الله عنها، عن ركعتي سنة الفجر"],
+  ["لن يلج النار أحد صلى قبل طلوع الشمس وقبل غروبها.", "رواه مسلم — عن عمارة بن رويبة رضي الله عنه"],
+  ["من صلى الصبح فهو في ذمة الله، فلا يطلبنَّكم الله من ذمته بشيء.", "رواه مسلم — عن جندب بن سفيان رضي الله عنه"],
+  ["لو يعلمون ما في العَتَمَة والفجر لأتوهما ولو حَبْوًا.", "رواه البخاري ومسلم — عن أبي هريرة رضي الله عنه، في فضل صلاتي العشاء والفجر جماعة"],
+  ["من صلى الفجر في جماعة، ثم قعد يذكر الله حتى تطلع الشمس، ثم صلى ركعتين، كانت له كأجر حجة وعمرة، تامة تامة تامة.", "رواه الترمذي — عن أنس بن مالك رضي الله عنه"]
+];
+document.getElementById('fajrVirtueList').innerHTML = fajrHadiths.map((h,i)=>`
+  <div class="item-card">
+    <span class="idx">فضيلة ${i+1}</span>
+    <div class="arabic">${h[0]}</div>
+    <div class="src">${h[1]}</div>
+  </div>
+`).join('');
+
+const fajrDuas = [
+  ["دعاء بعد صلاة الفجر", "اللهم إني أسألك علمًا نافعًا، ورزقًا طيبًا، وعملًا متقبلًا."],
+  ["دعاء أذكار الصباح", "اللهم بك أصبحنا، وبك أمسينا، وبك نحيا وبك نموت، وإليك النشور."],
+  ["سيد الاستغفار (يقال صباحًا)", "اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك، وأنا على عهدك ووعدك ما استطعت، أعوذ بك من شر ما صنعت، أبوء لك بنعمتك عليّ، وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت."]
+];
+document.getElementById('fajrDuaList').innerHTML = fajrDuas.map(d=>`
+  <div class="item-card">
+    <h3>${d[0]}</h3>
+    <div class="arabic">${d[1]}</div>
+  </div>
+`).join('');
+</script>
+<script src="app.js"></script>
+</body>
+</html>
