@@ -1,4 +1,4 @@
-const CACHE_NAME = 'alfajr-dawnly-v3';
+const CACHE_NAME = 'alfajr-dawnly-v4';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -35,10 +35,13 @@ self.addEventListener('fetch', (event) => {
   const isRemoteApi = url.includes('api.aladhan.com') || url.includes('cdn.islamic.network') || url.includes('mp3quran.net');
   if (isRemoteApi) return; // let these go straight to network, no caching
 
-  // HTML pages: network-first, so edits to index.html/support.html show up
-  // immediately for returning visitors instead of waiting on a version bump.
-  const isHTMLPage = event.request.mode === 'navigate' || url.endsWith('.html') || url.endsWith('/');
-  if (isHTMLPage) {
+  // HTML pages + CSS/JS: network-first. A stale cached copy of app.js or
+  // style.css can silently break rendering/behavior sitewide, so these are
+  // treated with the same urgency as the HTML pages themselves.
+  const isCriticalAsset = event.request.mode === 'navigate'
+    || url.endsWith('.html') || url.endsWith('/')
+    || url.endsWith('.css') || url.endsWith('.js');
+  if (isCriticalAsset) {
     event.respondWith(
       fetch(event.request)
         .then((res) => {
@@ -51,7 +54,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets (icons, manifest, fonts): cache-first for speed, network fallback.
+  // Truly static assets (icons, manifest): cache-first for speed, network fallback.
   event.respondWith(
     caches.match(event.request).then((cached) => {
       return cached || fetch(event.request).then((res) => {
