@@ -1,9 +1,4 @@
-/* ============ SCROLL REVEAL + PROGRESS BAR ============ */
-const revealObserver = new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('visible'); });
-}, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
-document.querySelectorAll('.section-card').forEach(card=> revealObserver.observe(card));
-
+/* ============ PROGRESS BAR ============ */
 window.addEventListener('scroll', ()=>{
   const bar = document.getElementById('progressBar');
   if(!bar) return;
